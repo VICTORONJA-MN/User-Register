@@ -23,3 +23,4 @@ Plantilla de una aplicación Android desarrollada en **Kotlin** con **SQLite** q
 | **Material Design 3** | Diseño de interfaz |
 | **RecyclerView** | Lista de usuarios |
 | **ViewBinding** | Manejo de vistas |
+| **Android Estudio** | Desarrollo del proyecto |
