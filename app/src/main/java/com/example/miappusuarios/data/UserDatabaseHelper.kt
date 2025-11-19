@@ -1,14 +1,26 @@
+/**
+ * CLASS: UserDatabaseHelper
+ * PATRÓN: Database Helper - Implementación del patrón Data Access Object (DAO)
+ * HERENCIA: SQLiteOpenHelper (Android Framework)
+ *
+ * RESPONSABILIDADES:
+ * - Creación y actualización del esquema de base de datos
+ * - Ejecución de operaciones CRUD (Create, Read, Update, Delete)
+ * - Manejo de conexiones y recursos de BD
+ * - Conversión entre modelos Kotlin y registros SQLite
+ */
+//paquete donde se encuentra la clase
 package com.example.miappusuarios.data
 
+//importaciones necesarias
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-//importar librerias
 
-//crear la base de datos
 class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
+    // CONSTANTES DE CONFIGURACIÓN
     companion object {
         private const val DATABASE_NAME = "users.db"
         private const val DATABASE_VERSION = 1
@@ -19,7 +31,12 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         private const val COLUMN_PHONE = "phone"
     }
 
-    //crear la tabla
+    /**
+     * MÉTODO: onCreate()
+     * INVOCACIÓN: Automática al crear BD por primera vez
+     * COMPLEJIDAD: O(1) - Operación única
+     * TRANSACCIÓN: Implícita con SQLite
+     */
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable = """
             CREATE TABLE $TABLE_NAME (
@@ -37,7 +54,13 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         onCreate(db)
     }
 
-    // crear un user
+    /**
+     * MÉTODO: addUser()
+     * OPERACIÓN: CREATE - Insertar nuevo registro
+     * @param user Instancia de User a persistir
+     * @return Long ID generado o -1 en caso de error
+     * COMPLEJIDAD: O(1) - Inserción directa
+     */
     fun addUser(user: User): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -50,7 +73,12 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return id
     }
 
-    // obtener los usuarios
+    /**
+     * MÉTODO: getAllUsers()
+     * OPERACIÓN: READ - Consultar todos los registros
+     * @return List<User> Lista de usuarios ordenada por ID
+     * COMPLEJIDAD: O(n) - n = número de registros
+     */
     fun getAllUsers(): List<User> {
         val users = mutableListOf<User>()
         val db = readableDatabase
@@ -68,7 +96,15 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return users
     }
 
-    // funcion para actualizar
+    /**
+     * MÉTODO: updateUser()
+     * OPERACIÓN: UPDATE - Actualizar un registro existente
+     * - Consultar todos los registros
+     * @param user Instancia de User a actualizar
+     * @return Int Número de registros actualizados (1 o 0)
+     * COMPLEJIDAD: O(1) - Actualización directa
+     */
+
     fun updateUser(user: User): Int {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -81,7 +117,13 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         return rowsAffected
     }
 
-    // func para eliminar
+    /**
+     * MÉTODO: delteUser()
+     * OPERACIÓN: DELETE - Eliminar un registro
+     * @param id ID del registro a eliminar
+     * @return Int Número de registros eliminados (1 o 0)
+     * COMPLEJIDAD: O(1) - Eliminación directa
+     */
     fun deleteUser(id: Long): Int {
         val db = writableDatabase
         val rowsAffected = db.delete(TABLE_NAME, "$COLUMN_ID = ?", arrayOf(id.toString()))

@@ -1,3 +1,15 @@
+/**
+ * CLASS: AddUserActivity
+ *
+ * PROPÓSITO: Formulario para creación de nuevos usuarios
+ * PATRÓN: Form Activity - Captura y validación de datos
+ *
+ * RESPONSABILIDADES:
+ * - Renderizar formulario de entrada
+ * - Validar datos del usuario
+ * - Persistir nuevo registro
+ * - Proveer feedback al usuario
+ */
 package com.example.miappusuarios.ui
 
 import android.os.Bundle
@@ -23,6 +35,11 @@ class AddUserActivity : AppCompatActivity() {
             saveUser()
         }
     }
+    /**
+     * método: saveUser()
+     * PROPÓSITO: Guarda un nuevo usuario en la base de datos
+     * PATRÓN: Modelo-Vista-Controlador (MVC)
+     */
     private fun saveUser() {
         val name = binding.etName.text.toString().trim()
         val email = binding.etEmail.text.toString().trim()

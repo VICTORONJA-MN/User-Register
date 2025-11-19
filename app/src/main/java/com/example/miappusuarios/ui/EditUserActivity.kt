@@ -1,3 +1,20 @@
+/**
+ * CLASS: EditUserActivity
+ *
+ * PROPÓSITO: Editar y eliminar usuarios existentes
+ * PATRÓN: Form Activity - Edición de entidades existentes
+ *
+ * RESPONSABILIDADES:
+ * - Cargar datos existentes del usuario
+ * - Permitir modificación de campos
+ * - Ejecutar UPDATE o DELETE en BD
+ * - Proveer feedback y navegación
+ *
+ * CARACTERÍSTICAS:
+ * - Pre-populado de formulario
+ * - Doble acción: Actualizar o Eliminar
+ * - Navegación automática al completar
+ */
 package com.example.miappusuarios.ui
 
 import android.os.Bundle
@@ -12,7 +29,18 @@ class EditUserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditUserBinding
     private lateinit var dbHelper: UserDatabaseHelper
     private var userId: Long = 0
-
+    /**
+     * MÉTODO: onCreate()
+     *
+     * PROPÓSITO: Inicializar UI y cargar datos del usuario a editar
+     * FLUJO: Inflar UI → Cargar datos del Intent → Configurar listeners
+     *
+     * DEPENDENCIAS:
+     * - Intent extras: Datos del usuario a editar
+     * - UserDatabaseHelper: Operaciones de persistencia
+     *
+     * COMPLEJIDAD: O(1) - Configuración y carga de datos
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditUserBinding.inflate(layoutInflater)
@@ -22,7 +50,24 @@ class EditUserActivity : AppCompatActivity() {
         getIntentData()
         setupClickListeners()
     }
-
+    /**
+     * MÉTODO: getIntentData()
+     *
+     * PROPÓSITO: Extraer y mostrar datos del usuario desde el Intent
+     * TÉCNICA: Intent extras para comunicación inter-Activity
+     *
+     * DATOS EXTRAÍDOS:
+     * - USER_ID: Identificador único (Long)
+     * - USER_NAME: Nombre actual (String)
+     * - USER_EMAIL: Email actual (String)
+     * - USER_PHONE: Teléfono actual (String)
+     *
+     * MANEJO DE ERRORES:
+     * - Valores por defecto si extras no existen
+     * - userId = 0 indica error (no debería ocurrir)
+     *
+     * COMPLEJIDAD: O(1) - Acceso a extras del Intent
+     */
     private fun getIntentData() {
         userId = intent.getLongExtra("USER_ID", 0)
         val name = intent.getStringExtra("USER_NAME") ?: ""
@@ -33,7 +78,18 @@ class EditUserActivity : AppCompatActivity() {
         binding.etEmail.setText(email)
         binding.etPhone.setText(phone)
     }
-
+    /**
+     * MÉTODO: setupClickListeners()
+     *
+     * PROPÓSITO: Configurar comportamientos de los botones de acción
+     * BOTONES:
+     * - btnUpdateUser: Guardar cambios (UPDATE)
+     * - btnDeleteUser: Eliminar usuario (DELETE)
+     *
+     * PATRÓN: Command - Cada botón ejecuta una operación específica
+     *
+     * COMPLEJIDAD: O(1) - Configuración de listeners
+     */
     private fun setupClickListeners() {
         binding.btnUpdateUser.setOnClickListener {
             updateUser()
@@ -43,7 +99,24 @@ class EditUserActivity : AppCompatActivity() {
             deleteUser()
         }
     }
-
+    /**
+     * MÉTODO: updateUser()
+     *
+     * PROPÓSITO: Validar y guardar cambios en el usuario
+     * OPERACIÓN: UPDATE - Modificación de registro existente
+     *
+     * FLUJO:
+     * 1. Validar campos del formulario
+     * 2. Crear objeto User con datos actualizados
+     * 3. Ejecutar UPDATE en BD
+     * 4. Mostrar feedback y navegar
+     *
+     * VALIDACIONES:
+     * - Campos no vacíos
+     * - userId válido (≠ 0)
+     *
+     * COMPLEJIDAD: O(1) - Operación por ID único
+     */
     private fun updateUser() {
         val name = binding.etName.text.toString().trim()
         val email = binding.etEmail.text.toString().trim()
@@ -64,7 +137,19 @@ class EditUserActivity : AppCompatActivity() {
             Toast.makeText(this, "Error al actualizar", Toast.LENGTH_SHORT).show()
         }
     }
-
+    /**
+     * MÉTODO: deleteUser()
+     *
+     * PROPÓSITO: Eliminar usuario actual sin confirmación adicional
+     * OPERACIÓN: DELETE - Eliminación directa desde pantalla de edición
+     *
+     * DIFERENCIA CON UsersListActivity:
+     * - No requiere confirmación (botón dedicado)
+     * - Eliminación inmediata
+     * - Mismo feedback y navegación
+     *
+     * COMPLEJIDAD: O(1) - Operación por ID único
+     */
     private fun deleteUser() {
         val rowsDeleted = dbHelper.deleteUser(userId)
         if (rowsDeleted > 0) {
